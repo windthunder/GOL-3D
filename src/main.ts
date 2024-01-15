@@ -73,17 +73,23 @@ document.body.appendChild(stats.dom)
 
 // 輔助函數 計算某個點周圍的活著的數量 用來判斷下一個狀態
 function countAround(x: number, y: number, z: number): number {
+	let max = guiData.max
+	let min = guiData.min
 	let count = 0
 	for(let i = -1; i <= 1; i++) {
 		for(let j = -1; j <= 1; j++) {
 			for(let k = -1; k <= 1; k++) {
 				if(i === 0 && j === 0 && k === 0) continue
 				// 不循環
-				data[x + i] && data[x + i][y + j] && data[x + i][y + j][z + k] && data[x + i][y + j][z + k] === 1 && count++
+				let temp1 = x + i
+				let temp2 = y + j
+				let temp3 = z + k
+				data[temp1] && data[temp1][temp2] && data[temp1][temp2][temp3] && data[temp1][temp2][temp3] === 1 && count++
+				if(count > max) return 0
 			}
 		}
 	}
-	return (count > guiData.min && count < guiData.max) ? 1 : 0
+	return count > min ? 1 : 0
 }
 
 function calc() {
