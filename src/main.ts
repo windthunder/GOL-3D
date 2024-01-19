@@ -172,7 +172,7 @@ function draw(count: number) {
 
 	for(let i = 0; i < small_count; i++) {
 		dummy.position.fromBufferAttribute(small_positions_buffer, i)
-		dummy.scale.set(1 + count / 50, 1 + count / 50, 1 + count / 50)
+		dummy.scale.set(1 + count / 100, 1 + count / 100, 1 + count / 100)
 		dummy.updateMatrix()
 		small_mesh.setMatrixAt(i, dummy.matrix)
 	}
@@ -208,14 +208,12 @@ let count = 0
 function step() {
 	if(!running) return
 	count++
-	if(count % 2 === 0) {
-		if(count === 10) {
-			calc()
-			count = 0
-		}
-		draw(count)
-		stats.update()
+	if(count === 20) {
+		calc()
+		count = 0
 	}
+	draw(count)
+	stats.update()
 	requestAnimationFrame(step)
 }
 
