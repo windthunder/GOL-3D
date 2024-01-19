@@ -54,7 +54,7 @@ const guiData = {
 	max: 13,
 	start: start,
 	stop: stop,
-	mode: 'color'
+	mode: 'size'
 }
 
 gui.add(guiData, 'width', 10, 100, 1).onChange(changed)
@@ -107,7 +107,7 @@ function calc() {
 	data = output
 }
 
-function draw() {
+function draw(count: number) {
 	// 先清空場景
 	// CHECK: 光源不會變 有沒有辦法只清空別的東西
 	scene.clear()
@@ -158,7 +158,7 @@ function draw() {
 			big_mesh = new THREE.InstancedMesh(geometries['small'], materials['blue'], big_count)
 			break
 		case 'size':
-			small_mesh = new THREE.InstancedMesh(geometries['small'], materials['blue'], small_count)
+			small_mesh = new THREE.InstancedMesh(geometries['small'], materials['red'], small_count)
 			big_mesh = new THREE.InstancedMesh(geometries['big'], materials['blue'], big_count)
 			break
 		default:
@@ -172,12 +172,14 @@ function draw() {
 
 	for(let i = 0; i < small_count; i++) {
 		dummy.position.fromBufferAttribute(small_positions_buffer, i)
+		dummy.scale.set(1 + count / 50, 1 + count / 50, 1 + count / 50)
 		dummy.updateMatrix()
 		small_mesh.setMatrixAt(i, dummy.matrix)
 	}
 
 	for(let i = 0; i < big_count; i++) {
 		dummy.position.fromBufferAttribute(big_positions_buffer, i)
+		dummy.scale.set(1, 1, 1)
 		dummy.updateMatrix()
 		big_mesh.setMatrixAt(i, dummy.matrix)
 	}
@@ -201,15 +203,19 @@ function draw() {
 	renderer.render(scene, camera)
 }
 
-let lastTime = 0
+// 每10次step才跑一次calc
+let count = 0
 function step() {
 	if(!running) return
-	if(performance.now() - lastTime > 200) {
-		lastTime = performance.now()
-		calc()
+	count++
+	if(count % 2 === 0) {
+		if(count === 10) {
+			calc()
+			count = 0
+		}
+		draw(count)
+		stats.update()
 	}
-	draw()
-	stats.update()
 	requestAnimationFrame(step)
 }
 
@@ -253,8 +259,8 @@ function initData() {
 function initGeometryAndMaterial() {
 	// 不能用點的效果 很糟糕 點放大之後是方的
 	// 繪製八面體
-	geometries['small'] = new THREE.OctahedronGeometry(2)
-	geometries['big'] = new THREE.OctahedronGeometry(3)
+	geometries['small'] = new THREE.OctahedronGeometry(1.5)
+	geometries['big'] = new THREE.OctahedronGeometry(1)
 	materials['blue'] = new THREE.MeshPhongMaterial({
 		color: 0x156289,
 		// emissive: 0xff0000, // 不太能理解emissive的意思 本身發光?
