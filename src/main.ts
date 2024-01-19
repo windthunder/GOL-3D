@@ -194,7 +194,7 @@ function draw(count: number) {
 
 	// 調整camera的位置
 	if(dataChanged) {
-		camera.position.set(0, 0, guiData.depth * 5 + 50)
+		camera.position.set(0, guiData.height * 2, guiData.depth * 7.1 + 50)
 		dataChanged = false
 	}
 
@@ -226,7 +226,7 @@ function initScene() {
 
 	camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
 	// 設定camera的位置
-	camera.position.set(0, 0, 80)
+	camera.position.set(0, guiData.height * 2, guiData.depth * 7.1 + 50)
 	// 設定camera看向哪個方向
 	camera.lookAt(0, 0, 0)
 
